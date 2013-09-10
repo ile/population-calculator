@@ -8,6 +8,7 @@
         uri = new Uri(),
         vars_query = uri.get(),
         vars = {
+        	title: '',
             birth_rate: 4,
             growth_rate: 0,
             birth_age: 21,
@@ -21,13 +22,17 @@
 
     if (vars_query && typeof(vars_query) === 'object') {
     	for (i in vars_query) {
-    		vars[i] = parseFloat(vars_query[i]);
+    		vars[i] = isNumber(vars_query[i])? parseFloat(vars_query[i]): vars_query[i];
     	}
     }
 
     calculate();
     set_intial_values();
     draw();
+
+    function isNumber(n) {
+      return !isNaN(parseFloat(n)) && isFinite(n);
+    }
 
     function print_growth() {
         global.d3.select('#growth_rate').html(Math.round(growth_rate * 100) / 100 + ' %')
@@ -194,7 +199,7 @@
         if (typeof (vars[el.id]) !== 'undefined') {
             global.d3.select('#' + el.id + '_v').html(global.Rickshaw.Fixtures.Number.formatKMBT(parseFloat(el.value)) || 0)
             print_growth()
-            vars[el.id] = parseFloat(el.value);
+            vars[el.id] = isNumber(el.value)? parseFloat(el.value): el.value;
             uri.set(vars);
             calculate();
             update_graph();

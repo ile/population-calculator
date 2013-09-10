@@ -1,7 +1,7 @@
 population-calculator
 =====================
 
-Population / demographics calculator
+Population / demographics calculator.
 
 ## Live demo
 

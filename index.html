@@ -1,0 +1,338 @@
+<!DOCTYPE HTML>
+<html>
+ <head>
+  <title>Population calculator</title>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="assets/rickshaw.min.js"></script>
+  <script src="assets/geller.js"></script>
+  <link rel="stylesheet" type="text/css" href="assets/rickshaw.min.css">
+  <link href='http://fonts.googleapis.com/css?family=PT+Serif:700' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Lora:700' rel='stylesheet' type='text/css'>
+  <link rel="icon" type="image/png" href="assets/083.png">
+	<meta charset="utf-8">
+	<style>
+
+	body {
+	  font: 14px Arial, Helvetica, sans-serif;
+	  margin:0;
+	  padding:0;
+	  background: #fff;
+	}
+
+	#controls {
+		margin: 50px auto 0 40px;
+		vertical-align: middle;
+	}
+
+	#controls > div
+	{
+		margin: 10px 0;
+	}
+
+	#controls span {
+		color: #fff;
+		background: #999;
+		border-radius: 22px;
+		padding: 1px 8px;
+		display: inline-block;
+		margin-left:4px;
+		text-shadow: 1px 1px 0 #777;
+	}
+	#controls * {
+		vertical-align: middle;
+	}
+
+	.wrap {
+		margin: 0 auto;
+		width: 1000px;
+		position: relative;
+	}
+
+	label {
+		width: 200px;
+		display: inline-block;
+	}
+
+	input[type=range] {
+		width: 700px;
+	}
+
+	input[type=text] {
+		border: solid 1px #ccc;
+		border-radius: 4px;
+		padding: 2px 5px;
+	}
+
+	#y_axis {
+	        position: absolute;
+	        top: 0;
+	        bottom: 0;
+	        width: 40px;
+	}
+
+	#chart {
+		margin-left: 40px;
+	}
+
+	header h1 {
+		font: bold 50px 'PT Serif', Arial;
+		text-rendering: optimizeLegibility ;
+		margin: 20px 0 0 0;
+	}
+
+	header {
+		margin-bottom: 40px;
+		padding: 10px;
+		text-rendering: optimizeLegibility ;
+	}
+
+	header a {
+		text-decoration: none;
+		color: #000;
+	}
+
+	footer
+	{
+		padding: 50px;
+		background:  #eee;
+		color:#666;
+		text-shadow: 1px 1px #fff;
+		font-size:12px;
+		margin-top: 200px;
+	}
+
+	footer a {
+		color: #666;
+	}
+
+	.x_label {
+		display: none;
+	}
+	</style>
+ </head>
+ <body>
+	<header><div class="wrap" style="width:930px"><h1><a href="/population-calculator/">Population calculator</a></h1><span>What do the future populations/demographics look like?</span></div></header>
+	<div class="wrap">
+		<div id="chart_container">
+      <div id="y_axis"></div>
+      <div id="chart"></div>
+		</div>
+		<div id="controls">
+			<div><label for="birth_rate">Total fertility rate <span id="birth_rate_v"></span></label> <input type="range" min="0" max="10" step="0.01" onchange="PopCalc.update(this)" id="birth_rate"></div>
+			<div>Growth rate (yearly) <span id="growth_rate"></span></div>
+			<div><label for="immigration">immigration/year <span id="immigration_v"></span></label> <input type="range" min="0" max="100000" step="100" onchange="PopCalc.update(this)" id="immigration"></div>
+			<div><label for="start_pop">Starting population <span id="start_pop_v"></span></label> <input type="range" min="0" max="10000000" step="1000" id="start_pop" value="" onchange="PopCalc.update(this)"></div>
+			<div><label for="birth_age">First birth given (age) <span id="birth_age_v"></span></label> <input type="range" min="16" max="40" step="1" id="birth_age" value="" onchange="PopCalc.update(this)"></div>
+			<div><label for="timespan">Timespan (years) <span id="timespan_v"></span></label> <input type="range" min="10" max="1000" step="1" id="timespan" value="" onchange="PopCalc.update(this)"></div>
+		</div>
+	</div>
+	<footer><div class="wrap"><p>Population / demographics calculator</p><p>&copy; <a href="https://github.com/ile">Ilkka Huotari 2013</a></p></div></footer>
+<a href="https://github.com/ile/population-calculator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+	<script>
+
+	(function (global) {
+	    var graph,
+	        data,
+	        data2,
+	        i,
+	        HUMAN_AGE = 80,
+	        uri = new Uri(),
+	        vars_query = uri.get(),
+	        vars = {
+	            birth_rate: 4,
+	            growth_rate: 0,
+	            birth_age: 21,
+	            immigration: 5000,
+	            start_pop: 60000,
+	            timespan: 160,
+	            start_year: 2013
+	        }
+
+	    var PopCalc = global.PopCalc = global.PopCalc || {};
+
+	    if (vars_query && typeof(vars_query) === 'object') {
+	    	for (i in vars_query) {
+	    		vars[i] = parseFloat(vars_query[i]);
+	    	}
+	    }
+
+	    calculate();
+	    set_intial_values();
+	    draw();
+
+	    function print_growth() {
+	        global.d3.select('#growth_rate').html(Math.round(growth_rate * 100) / 100 + ' %')
+	    }
+
+	    function sum(data) {
+	        var sum = data.reduce(function (previousValue, currentValue) {
+	            return currentValue + previousValue;
+	        });
+
+	        return sum;
+	    }
+
+	    function set_intial_values() {
+	        var el, el2, i;
+
+	        print_growth();
+	        for (i in vars) {
+	            el = global.d3.select('#' + i)
+	            el2 = global.d3.select('#' + i + '_v')
+	            if (el) {
+	                el.attr('value', vars[i])
+	                el2.html(global.Rickshaw.Fixtures.Number.formatKMBT(vars[i]))
+	            }
+	        }
+	    }
+
+	    function calculate() {
+	        var i, initial, immigration_yearly;
+
+	        function initial_population(n) {
+	            var i, p, d = [];
+
+	            for (i = 0; i < HUMAN_AGE - 1; i++) {
+	                // skewed population pyramid
+	                // d[i] = i < 10? n * 0.005 : (i < 20 ? n * 0.025 : (i < 30 ? n * 0.03 : (i < 40 ? n * 0.022 : (n * 0.005))));;
+
+	                // flat population pyramid
+	                d[i] = Math.ceil(n * 0.012651);
+	            }
+
+	            return d;
+	        }
+
+	        function aging(n) {
+	            var i;
+
+	            for (i = 1; i < HUMAN_AGE; i++) {
+	                data[n]['population'][i] = data[n - 1]['population'][i - 1];
+	            }
+	        }
+
+	        function birth(n) {
+	            var i,
+	                how_many_babies,
+	                upper_year = vars.birth_age + Math.ceil(vars.birth_rate),
+	                remainder = vars.birth_rate - Math.floor(vars.birth_rate) || 1;
+
+	            for (i = vars.birth_age, j = Math.ceil(vars.birth_rate); i < upper_year; i++, j--) {
+	                how_many_babies = j > 1 ? 1 : remainder;
+
+	                // half of the population (women) is giving birth to 'how_many_babies' babies
+	                // how_many_babies is normally 1 but the last baby can be [0..1]
+	                data[n]['population'][0] += Math.floor((data[n]['population'][i] / 2) * how_many_babies);
+	            }
+	        }
+
+	        function immigration(n) {
+	            var i;
+
+	            for (i = 1; i < HUMAN_AGE - 1; i++) {
+	                data[n]['population'][i] += immigration_yearly[i];
+	            }
+	        }
+
+	        initial = initial_population(vars.start_pop);
+	        data = [{
+	            year: vars.start_year,
+	            population: initial,
+	            total: sum(initial)
+	        }]
+	        data2 = [{
+	            x: Math.ceil(new Date(vars.start_year, 0, 2).getTime() / 1000),
+	            y: data[0]['total']
+	        }];
+	        immigration_yearly = initial_population(vars.immigration);
+
+	        for (i = 1; i < vars.timespan; i++) {
+	            data[i] = {
+	                year: vars.start_year + i,
+	                population: [0],
+	                total: 0
+	            }
+	            aging(i);
+	            birth(i);
+	            immigration(i);
+	            data[i]['total'] = sum(data[i]['population']);
+	            data2[i] = {
+	                x: Math.ceil(new Date(data[i]['year'], 0, 2).getTime() / 1000),
+	                y: data[i]['total']
+	            }
+	        }
+
+	        growth_rate = (Math.pow(vars.birth_rate / 2, 1 / (vars.birth_age + Math.ceil(vars.birth_rate))) - 1) * 100;
+	    }
+
+	    function draw() {
+	        var width = 960,
+	            height = 550,
+	            hoverDetail,
+	            time,
+	            years,
+	            x_axis,
+	            y_axis;
+
+	        graph = new global.Rickshaw.Graph({
+	            element: document.querySelector("#chart"),
+	            width: width,
+	            height: height,
+	            renderer: 'area',
+	            stroke: true,
+	            series: [{
+	                data: data2,
+	                color: '#cae2f7'
+	            }]
+	        });
+
+	        hoverDetail = new global.Rickshaw.Graph.HoverDetail({
+	            graph: graph,
+	            formatter: function (series, x, y, formattedX, formattedY, d) {
+	                return formattedX + '<br>' + 'population: ' + formattedY;
+	            },
+	            yFormatter: function (y, x) {
+	                return global.Rickshaw.Fixtures.Number.formatKMBT(y)
+	            },
+	            xFormatter: function (ts) {
+	                var y = new Date(ts * 1000).getFullYear();
+	                return 'year: ' + y + '<br>from now: ' + (y - new Date().getFullYear() + ' years');
+	            }
+	        });
+
+	        time = new global.Rickshaw.Fixtures.Time();
+	        years = time.unit('year');
+	        x_axis = new global.Rickshaw.Graph.Axis.Time({
+	            graph: graph
+	        });
+
+	        y_axis = new global.Rickshaw.Graph.Axis.Y({
+	            graph: graph,
+	            orientation: 'left',
+	            tickFormat: global.Rickshaw.Fixtures.Number.formatKMBT,
+	            element: document.getElementById('y_axis'),
+	        });
+
+	        graph.render();
+	    }
+
+	    function update_graph() {
+	        graph.series[0].data = data2;
+	        graph.update();
+	    }
+
+	    PopCalc.update = function update(el) {
+	        if (typeof (vars[el.id]) !== 'undefined') {
+	            global.d3.select('#' + el.id + '_v').html(global.Rickshaw.Fixtures.Number.formatKMBT(parseFloat(el.value)) || 0)
+	            print_growth()
+	            vars[el.id] = parseFloat(el.value);
+	            uri.set(vars);
+	            calculate();
+	            update_graph();
+	        }
+	    }
+
+	}(this));
+	</script>
+ </body>
+</html>

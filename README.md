@@ -7,7 +7,7 @@ Population / demographics calculator
 
 Available at [http://ile.github.io/population-calculator](http://ile.github.io/population-calculator)
 
-![Image](https://f.cloud.github.com/assets/433707/1111785/cc58f24a-19bd-11e3-9288-96173d5e8e87.png)
+![image](https://f.cloud.github.com/assets/433707/1111791/3a81b5cc-19be-11e3-9bd3-2cc6e9d4e48f.png)
 
 ## Credits
 

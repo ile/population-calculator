@@ -18,14 +18,15 @@
             start_year: 2013
         }
 
-    var PopCalc = global.PopCalc = global.PopCalc || {};
-
     if (vars_query && typeof(vars_query) === 'object') {
     	for (i in vars_query) {
     		vars[i] = isNumber(vars_query[i])? parseFloat(vars_query[i]): vars_query[i];
     	}
     }
 
+    global.d3.selectAll('input.vars').on('change', input_change);
+    global.d3.selectAll('#title').on('keypress', title_keyup);
+    show_storage();
     calculate();
     set_intial_values();
     draw();
@@ -34,7 +35,7 @@
       return !isNaN(parseFloat(n)) && isFinite(n);
     }
 
-    function print_growth() {
+    function print_growth_rate() {
         global.d3.select('#growth_rate').html(Math.round(growth_rate * 100) / 100 + ' %')
     }
 
@@ -49,7 +50,7 @@
     function set_intial_values() {
         var el, el2, i;
 
-        print_growth();
+        print_growth_rate();
         for (i in vars) {
             el = global.d3.select('#' + i)
             el2 = global.d3.select('#' + i + '_v')
@@ -195,15 +196,70 @@
         graph.update();
     }
 
-    PopCalc.update = function update(el) {
-        if (typeof (vars[el.id]) !== 'undefined') {
-            global.d3.select('#' + el.id + '_v').html(global.Rickshaw.Fixtures.Number.formatKMBT(parseFloat(el.value)) || 0)
-            print_growth()
-            vars[el.id] = isNumber(el.value)? parseFloat(el.value): el.value;
+    function add_to_store(input) {
+        if (global.localStorage && JSON && vars['title']) {
+            global.localStorage.setItem(vars['title'], JSON.stringify(vars));
+            if (input === 'title') {
+                message('saved');
+            }
+        }
+    }
+
+    function del_from_store() {
+        if (global.localStorage && JSON) {
+            global.localStorage.removeItem(d3.select(this.previousSibling).datum());
+            global.d3.select(d3.select(this.parentNode).remove())
+        }
+    }
+
+    function show_storage() {
+        var key, obj;
+
+        if (global.localStorage && JSON) {
+            global.d3.select('#storage').html(null);
+            for (var key in localStorage) {
+                obj = JSON.parse(localStorage.getItem(key));
+                global.d3.select('#storage')
+                    .append('li')
+                    .append('a')
+                    .attr('href', '/population-calculator/?' + Math.floor(Math.random() * 1000) + '#'+uri.toString(obj))
+                    .html(obj.title)
+                    .datum(obj.title);
+
+            }
+            global.d3.selectAll('#storage li').append('span').html('delete').on('click', del_from_store)
+        }
+    }
+
+    function title_keyup() {
+        if (d3.event.keyCode === 13) {
+            this.blur();
+        }
+    }
+
+    function input_change(el) {
+        if (typeof (vars[this.id]) !== 'undefined') {
+            global.d3.select('#' + this.id + '_v').html(global.Rickshaw.Fixtures.Number.formatKMBT(parseFloat(this.value)) || 0)
+            print_growth_rate()
+            vars[this.id] = isNumber(this.value)? parseFloat(this.value): this.value;
             uri.set(vars);
             calculate();
+            add_to_store(this.id);
+            show_storage();
             update_graph();
         }
+    }
+
+    var timeout;
+
+    function message(str) {
+        if (global.d3.select('#message').empty())
+        {
+            global.d3.select('body').append('div').attr('id', 'message')
+        }
+        var msg = global.d3.select('#message').html(str).attr('class', 'show')
+        global.clearTimeout(timeout);
+        timeout = global.setTimeout(function() { msg.attr('class', ''); }, 4000)
     }
 
 }(this));

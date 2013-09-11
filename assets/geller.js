@@ -6,6 +6,7 @@
  * Copyright 2013, Ilkka Huotari
  * Released under the MIT license.
  *
+ * Partly (C) https://github.com/derek-watson/jsUri
  */
 
 
@@ -122,14 +123,15 @@
      * Serializes the internal state of the Uri object
      * @return {string}
      */
-    Uri.prototype.toString = function() {
+    Uri.prototype.toString = function(obj) {
         var s = '';
+        obj = obj || this.queryPairs;
 
-        for (var i in this.queryPairs) {
+        for (var i in obj) {
             if (s.length) {
                 s += '&'
             }
-            s += encodeURIComponent(i) + '=' + encodeURIComponent(this.queryPairs[i])
+            s += encodeURIComponent(i) + '=' + encodeURIComponent(obj[i])
         }
 
         return s;

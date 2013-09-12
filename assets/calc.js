@@ -200,7 +200,7 @@
         if (global.localStorage && JSON && vars['title']) {
             global.localStorage.setItem(vars['title'], JSON.stringify(vars));
             if (input === 'title') {
-                message('saved');
+                message('graph saved');
             }
         }
     }

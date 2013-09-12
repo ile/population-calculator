@@ -12,7 +12,7 @@
             birth_rate: 4,
             growth_rate: 0,
             birth_age: 21,
-            immigration: 2000,
+            immigration: 5000,
             start_pop: 60000,
             timespan: 160,
             start_year: 2013

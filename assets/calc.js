@@ -101,11 +101,11 @@
                 upper_year = vars.birth_age + Math.ceil(vars.birth_rate),
                 remainder = vars.birth_rate - Math.floor(vars.birth_rate) || 1;
 
+            // half of the population (women) is giving birth to 'how_many_babies' babies per year
+            // how_many_babies is normally 1 but the last baby can be [0..1]
             for (i = vars.birth_age, j = Math.ceil(vars.birth_rate); i < upper_year; i++, j--) {
                 how_many_babies = j > 1 ? 1 : remainder;
 
-                // half of the population (women) is giving birth to 'how_many_babies' babies
-                // how_many_babies is normally 1 but the last baby can be [0..1]
                 data[n]['population'][0] += Math.floor((data[n]['population'][i] / 2) * how_many_babies);
             }
         }
@@ -119,15 +119,18 @@
         }
 
         initial = initial_population(vars.start_pop, 'flat');
+
         data = [{
             year: vars.start_year,
             population: initial,
             total: sum(initial)
         }]
+
         data2 = [{
             x: Math.ceil(new Date(vars.start_year, 0, 2).getTime() / 1000),
             y: data[0]['total']
         }];
+
         immigration_yearly = initial_population(vars.immigration, 'flat');
 
         for (i = 1; i < vars.timespan; i++) {

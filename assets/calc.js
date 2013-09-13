@@ -54,11 +54,16 @@
 
         print_growth_rate();
         for (i in vars) {
-            el = global.d3.select('#' + i)
-            el2 = global.d3.select('#' + i + '_v')
+            el = global.d3.select('#' + i);
+            el2 = global.d3.select('#' + i + '_v');
             if (el) {
-                el.attr('value', vars[i])
-                el2.html(global.Rickshaw.Fixtures.Number.formatKMBT(vars[i]) || 0)
+                if (i === 'pyramid') {
+                    el.property('value', vars[i]);
+                }
+                else {
+                    el.attr('value', vars[i]);
+                }
+                el2.html(global.Rickshaw.Fixtures.Number.formatKMBT(vars[i]) || 0);
             }
         }
     }

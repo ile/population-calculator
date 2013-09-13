@@ -15,7 +15,8 @@
             immigration: 5000,
             start_pop: 60000,
             timespan: 160,
-            start_year: 2013
+            start_year: 2013,
+            pyramid: 'flat'
         }
 
     if (vars_query && typeof(vars_query) === 'object') {
@@ -24,7 +25,7 @@
     	}
     }
 
-    global.d3.selectAll('input.vars').on('change', input_change);
+    global.d3.selectAll('.vars').on('change', input_change);
     global.d3.selectAll('#title').on('keypress', title_keyup);
     show_storage();
     calculate();
@@ -118,7 +119,7 @@
             }
         }
 
-        initial = initial_population(vars.start_pop, 'flat');
+        initial = initial_population(vars.start_pop, vars.pyramid);
 
         data = [{
             year: vars.start_year,
@@ -131,7 +132,7 @@
             y: data[0]['total']
         }];
 
-        immigration_yearly = initial_population(vars.immigration, 'flat');
+        immigration_yearly = initial_population(vars.immigration, vars.pyramid);
 
         for (i = 1; i < vars.timespan; i++) {
             data[i] = {
@@ -250,12 +251,12 @@
     function input_change(el) {
         if (typeof (vars[this.id]) !== 'undefined') {
             global.d3.select('#' + this.id + '_v').html(global.Rickshaw.Fixtures.Number.formatKMBT(parseFloat(this.value)) || 0)
-            print_growth_rate()
             vars[this.id] = isNumber(this.value)? parseFloat(this.value): this.value;
             uri.set(vars);
             calculate();
             add_to_store(this.id);
             show_storage();
+            print_growth_rate()
             update_graph();
         }
     }

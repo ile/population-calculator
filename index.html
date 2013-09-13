@@ -118,6 +118,12 @@
     color: #666;
   }
 
+  select {
+    padding: 5px 10px;
+    border: solid 3px #aaa;
+    border-radius: 4px;
+  }
+
   #storage {
     margin-top: 100px;
     font-size:22px;
@@ -202,6 +208,13 @@
       <div><label for="start_pop">Starting population <span id="start_pop_v"></span></label> <input class="vars" type="range" min="0" max="10000000" step="1000" id="start_pop" value=""></div>
       <div><label for="birth_age">First birth given (age) <span id="birth_age_v"></span></label> <input class="vars" type="range" min="16" max="40" step="1" id="birth_age" value=""></div>
       <div><label for="timespan">Timespan (years) <span id="timespan_v"></span></label> <input class="vars" type="range" min="10" max="1000" step="1" id="timespan" value=""></div>
+      <div>
+        <label for="pyramid">Age pyramid</label> 
+        <select class="vars" id="pyramid">
+          <option value="youth">Ages 10-40 emphasized</option>
+          <option value="flat">Flat</option>
+        </select>
+      </div>
     </div>
     <ul id="storage"></ul>
   </div>

@@ -2,15 +2,15 @@
 (function (global) {
     var graph,
         data,
-        data2,
+        data2, // for display
         i,
         HUMAN_AGE = 80,
         uri = new Uri(),
+        growth_rate = 0,
         vars_query = uri.get(),
         vars = {
         	title: '',
             birth_rate: 4,
-            growth_rate: 0,
             birth_age: 21,
             immigration: 5000,
             start_pop: 60000,
@@ -36,6 +36,7 @@
     }
 
     function print_growth_rate() {
+        growth_rate = (Math.pow(vars.birth_rate / 2, 1.0 / (vars.birth_age + vars.birth_rate)) - 1) * 100;
         global.d3.select('#growth_rate').html(Math.round(growth_rate * 100) / 100 + ' %')
     }
 
@@ -56,23 +57,31 @@
             el2 = global.d3.select('#' + i + '_v')
             if (el) {
                 el.attr('value', vars[i])
-                el2.html(global.Rickshaw.Fixtures.Number.formatKMBT(vars[i]))
+                el2.html(global.Rickshaw.Fixtures.Number.formatKMBT(vars[i]) || 0)
             }
         }
     }
 
     function calculate() {
-        var i, initial, immigration_yearly;
+        var i, initial, immigration_yearly,pyramids;
 
-        function initial_population(n) {
+        pyramids = {
+            // population pyramid: ages 10-40 emphasized
+            youth: function(n, i) { return i < 10? n * 0.005 : (i < 20 ? n * 0.025 : (i < 30 ? n * 0.03 : (i < 40 ? n * 0.022 : (n * 0.005)))); },
+
+            // flat population pyramid
+            flat: function(n, i) { return Math.ceil(n * 0.012651); },
+
+            //testing
+            all0: function(n, i) { return i < 1? n: 0; }
+        }
+
+        function initial_population(n, pyramid) {
             var i, p, d = [];
+            pyramid = pyramid || 'flat';
 
             for (i = 0; i < HUMAN_AGE - 1; i++) {
-                // skewed population pyramid
-                // d[i] = i < 10? n * 0.005 : (i < 20 ? n * 0.025 : (i < 30 ? n * 0.03 : (i < 40 ? n * 0.022 : (n * 0.005))));;
-
-                // flat population pyramid
-                d[i] = Math.ceil(n * 0.012651);
+                d[i] = pyramids[pyramid](n, i);
             }
 
             return d;
@@ -109,7 +118,7 @@
             }
         }
 
-        initial = initial_population(vars.start_pop);
+        initial = initial_population(vars.start_pop, 'flat');
         data = [{
             year: vars.start_year,
             population: initial,
@@ -119,7 +128,7 @@
             x: Math.ceil(new Date(vars.start_year, 0, 2).getTime() / 1000),
             y: data[0]['total']
         }];
-        immigration_yearly = initial_population(vars.immigration);
+        immigration_yearly = initial_population(vars.immigration, 'flat');
 
         for (i = 1; i < vars.timespan; i++) {
             data[i] = {
@@ -136,8 +145,6 @@
                 y: data[i]['total']
             }
         }
-
-        growth_rate = (Math.pow(vars.birth_rate / 2, 1 / (vars.birth_age + Math.ceil(vars.birth_rate))) - 1) * 100;
     }
 
     function draw() {

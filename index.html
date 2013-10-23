@@ -35,6 +35,7 @@
     display: inline-block;
     margin-left:4px;
     text-shadow: 1px 1px 0 #777;
+    cursor: pointer;
   }
   #controls * {
     vertical-align: middle;
@@ -107,15 +108,16 @@
   footer
   {
     padding: 50px;
-    background:  #eee;
-    color:#666;
+    background:  #fafaf8;
+    color:#999;
     text-shadow: 1px 1px #fff;
     font-size:12px;
     margin-top: 200px;
+    border-top: solid 1px #eee;
   }
 
   footer a {
-    color: #666;
+    color: #999;
   }
 
   select {
@@ -195,19 +197,19 @@
   </style>
  </head>
  <body>
-  <header><div class="wrap" style="padding-left:80px"><h1><a href="/population-calculator/">Population calculator</a></h1><input class="vars" type="text" id="title" placeholder="(enter title...)"><div>What do the future populations/demographics look like?</div></div></header>
+  <header><div class="wrap" style="padding-left:80px"><h1><a href="/population-calculator/">Population calculator</a></h1><input class="vars" type="text" id="title" placeholder="(enter title to save...)"><div>What do the future populations/demographics look like?</div></div></header>
   <div class="wrap">
     <div id="chart_container">
       <div id="y_axis"></div>
       <div id="chart"></div>
     </div>
     <div id="controls">
-      <div><label for="birth_rate">Total fertility rate <span id="birth_rate_v"></span></label> <input class="vars" type="range" min="0" max="10" step="0.01" id="birth_rate"></div>
-      <div>Growth rate (yearly) <span id="growth_rate"></span></div>
-      <div><label for="immigration">immigration/year <span id="immigration_v"></span></label> <input class="vars" type="range" min="0" max="100000" step="100" id="immigration"></div>
-      <div><label for="start_pop">Starting population <span id="start_pop_v"></span></label> <input class="vars" type="range" min="0" max="10000000" step="1000" id="start_pop" value=""></div>
-      <div><label for="birth_age">First birth given (age) <span id="birth_age_v"></span></label> <input class="vars" type="range" min="16" max="40" step="1" id="birth_age" value=""></div>
-      <div><label for="timespan">Timespan (years) <span id="timespan_v"></span></label> <input class="vars" type="range" min="10" max="1000" step="1" id="timespan" value=""></div>
+      <div><label for="birth_rate">Total fertility rate <span data-for="birth_rate" id="birth_rate_v"></span></label> <input class="vars" type="range" min="0" max="10" step="0.01" id="birth_rate"></div>
+      <div>Growth rate (yearly) <span data-for="growth_rate" id="growth_rate"></span></div>
+      <div><label for="immigration">immigration/year <span data-for="immigration" id="immigration_v"></span></label> <input class="vars" type="range" min="0" max="100000" step="100" id="immigration"></div>
+      <div><label for="start_pop">Starting population <span data-for="start_pop" id="start_pop_v"></span></label> <input class="vars" type="range" min="0" max="10000000" step="1000" id="start_pop" value=""></div>
+      <div><label for="birth_age">First birth given (age) <span data-for="birth_age" id="birth_age_v"></span></label> <input class="vars" type="range" min="16" max="40" step="1" id="birth_age" value=""></div>
+      <div><label for="timespan">Timespan (years) <span data-for="timespan" id="timespan_v"></span></label> <input class="vars" type="range" min="10" max="1000" step="1" id="timespan" value=""></div>
       <div>
         <label for="pyramid">Age pyramid</label> 
         <select class="vars" id="pyramid">
@@ -221,18 +223,5 @@
   <footer><div class="wrap"><p>Population / demographics calculator</p><p>&copy; <a href="https://github.com/ile/population-calculator">Ilkka Huotari 2013</a></p></div></footer>
   <a href="https://github.com/ile/population-calculator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
   <script src="assets/calc.js"></script>
-  <script type="text/javascript">
-
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-43944509-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-
-  </script>
  </body>
 </html>

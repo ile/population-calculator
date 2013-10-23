@@ -25,12 +25,28 @@
     	}
     }
 
+    // set some event handlers
     global.d3.selectAll('.vars').on('change', input_change);
     global.d3.selectAll('#title').on('keypress', title_keyup);
+    global.d3.selectAll('label span').on('click', get_value_manually);
     show_storage();
     calculate();
     set_intial_values();
     draw();
+
+    function get_value_manually(e) {
+        var id,
+            result,
+            el = d3.event.srcElement;
+
+        if (el) {
+            id = el.getAttribute('data-for');
+            result = window.prompt('New value', vars[id]);
+            if (result !== null) {
+                vars_changed(id, result);
+            }
+        }
+    }
 
     function isNumber(n) {
       return !isNaN(parseFloat(n)) && isFinite(n);
@@ -253,16 +269,20 @@
         }
     }
 
+    function vars_changed(name, value) {
+        vars[name] = isNumber(value)? parseFloat(value): value;
+        global.d3.select('#' + name + '_v').html(global.Rickshaw.Fixtures.Number.formatKMBT(parseFloat(value)) || 0);
+        uri.set(vars);
+        calculate();
+        add_to_store(name);
+        show_storage();
+        print_growth_rate()
+        update_graph();
+    }
+
     function input_change(el) {
         if (typeof (vars[this.id]) !== 'undefined') {
-            global.d3.select('#' + this.id + '_v').html(global.Rickshaw.Fixtures.Number.formatKMBT(parseFloat(this.value)) || 0)
-            vars[this.id] = isNumber(this.value)? parseFloat(this.value): this.value;
-            uri.set(vars);
-            calculate();
-            add_to_store(this.id);
-            show_storage();
-            print_growth_rate()
-            update_graph();
+            vars_changed(this.id, this.value);
         }
     }
 

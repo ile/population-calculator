@@ -92,8 +92,7 @@
             youth: function(n, i) { return i < 10? n * 0.005 : (i < 20 ? n * 0.025 : (i < 30 ? n * 0.03 : (i < 40 ? n * 0.022 : (n * 0.005)))); },
 
             // flat population pyramid
-            // flat: function(n, i) { return Math.floor(n * 0.012651); },
-            flat: function(n, i) { return Math.round(n / vars.human_age); },
+            flat: function(n) { return Math.round(n / vars.human_age); },
 
             //testing
             all0: function(n, i) { return i < 1? n: 0; }

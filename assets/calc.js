@@ -8,13 +8,13 @@
         growth_rate = 0,
         vars_query = uri.get(),
         vars = {
-            human_age: 105,
+            human_age: 80,
         	title: '',
             birth_rate: 4,
             birth_age: 21,
-            immigration: 5000,
+            immigration: 1000,
             start_pop: 60000,
-            timespan: 160,
+            timespan: 200,
             start_year: 2013,
             pyramid: 'flat'
         }
@@ -85,21 +85,22 @@
     }
 
     function calculate() {
-        var i, initial, immigration_yearly,pyramids;
-
-        pyramids = {
-            // population pyramid: ages 10-40 emphasized
-            youth: function(n, i) { return i < 10? n * 0.005 : (i < 20 ? n * 0.025 : (i < 30 ? n * 0.03 : (i < 40 ? n * 0.022 : (n * 0.005)))); },
-
-            // flat population pyramid
-            flat: function(n) { return Math.round(n / vars.human_age); },
-
-            //testing
-            all0: function(n, i) { return i < 1? n: 0; }
-        }
+        var i, initial, immigration_yearly;
 
         function initial_population(n, pyramid) {
-            var i, p, d = [];
+            var i, p, d = [],
+                pyramids = {
+                    // population pyramid: ages 10-40 emphasized
+                    // youth: function(n, i) { return i < 10? n * 0.005 / vars.human_age : (i < 20 ? n * 0.025 / vars.human_age: (i < 30 ? n * 0.03 / vars.human_age : (i < 40 ? n * 0.022 / vars.human_age: (n * 0.005 / vars.human_age)))); },
+                    youth: function(n, i) { return i >= 10 && i < 40? Math.round((n / 2) / 30): Math.floor((n / 2) / (vars.human_age - 30))  },
+
+                    // flat population pyramid
+                    flat: function(n) { return Math.round(n / vars.human_age); },
+
+                    //testing
+                    all0: function(n, i) { return i < 1? n: 0; }
+                }
+
             pyramid = pyramid || 'flat';
 
             for (i = 0; i < vars.human_age - 1; i++) {

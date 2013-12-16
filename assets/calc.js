@@ -4,11 +4,11 @@
         data,
         data2, // for display
         i,
-        HUMAN_AGE = 80,
         uri = new Uri(),
         growth_rate = 0,
         vars_query = uri.get(),
         vars = {
+            human_age: 105,
         	title: '',
             birth_rate: 4,
             birth_age: 21,
@@ -92,7 +92,8 @@
             youth: function(n, i) { return i < 10? n * 0.005 : (i < 20 ? n * 0.025 : (i < 30 ? n * 0.03 : (i < 40 ? n * 0.022 : (n * 0.005)))); },
 
             // flat population pyramid
-            flat: function(n, i) { return Math.ceil(n * 0.012651); },
+            // flat: function(n, i) { return Math.floor(n * 0.012651); },
+            flat: function(n, i) { return Math.round(n / vars.human_age); },
 
             //testing
             all0: function(n, i) { return i < 1? n: 0; }
@@ -102,7 +103,7 @@
             var i, p, d = [];
             pyramid = pyramid || 'flat';
 
-            for (i = 0; i < HUMAN_AGE - 1; i++) {
+            for (i = 0; i < vars.human_age - 1; i++) {
                 d[i] = pyramids[pyramid](n, i);
             }
 
@@ -112,7 +113,7 @@
         function aging(n) {
             var i;
 
-            for (i = 1; i < HUMAN_AGE; i++) {
+            for (i = 1; i < vars.human_age; i++) {
                 data[n]['population'][i] = data[n - 1]['population'][i - 1];
             }
         }
@@ -135,7 +136,7 @@
         function immigration(n) {
             var i;
 
-            for (i = 1; i < HUMAN_AGE - 1; i++) {
+            for (i = 1; i < vars.human_age - 1; i++) {
                 data[n]['population'][i] += immigration_yearly[i];
             }
         }
@@ -147,6 +148,8 @@
             population: initial,
             total: sum(initial)
         }]
+
+        console.log(data);
 
         data2 = [{
             x: Math.ceil(new Date(vars.start_year, 0, 2).getTime() / 1000),

@@ -27,6 +27,15 @@
     margin: 10px 0;
   }
 
+  #controls label span:hover {
+    background: #666;
+    border: solid 1px #222;
+  }
+
+  #controls label span {
+    cursor: pointer;
+  }
+
   #controls span {
     color: #fff;
     background: #999;
@@ -35,7 +44,8 @@
     display: inline-block;
     margin-left:4px;
     text-shadow: 1px 1px 0 #777;
-    cursor: pointer;
+    border: solid 1px transparent;
+    transition: 0.3s ease all;
   }
   #controls * {
     vertical-align: middle;
@@ -60,19 +70,18 @@
     background: #fafafa;
     box-shadow: 0 0 7px rgba(0,0,0,0.1) inset;
     transition: 0.2s all ease;
-    }
+  }
 
   input[type=text] {
     border: solid 1px #ccc;
     border-radius: 4px;
     padding: 2px 5px;
-    font: bold 36px Arial, sans-serif;
+    font: bold 30px Arial, sans-serif;
     border-width: 0;
     color: #666;
     outline: none;
     width: 420px;
-    display: inline-block;
-    margin: 0 0 0 30px;
+    display: block;
   }
 
   #y_axis {
@@ -91,7 +100,6 @@
     text-rendering: optimizeLegibility ;
     margin: 20px 0 0 0;
     display: inline-block;
-    font-size: 49px;
   }
 
   header {
@@ -165,9 +173,8 @@
     top: 10px;
     right: 10px;
     width: 200px;
-    background: rgba(244,244,200,0.95);
-    color: #882;
-    text-shadow: 1px 1px 0 #fff;
+    background: rgba(44,44,44,0.95);
+    color: #eee;
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 0 16px rgba(0,0,0,0.2);
@@ -197,7 +204,12 @@
   </style>
  </head>
  <body>
-  <header><div class="wrap" style="padding-left:80px"><h1><a href="/population-calculator/">Population calculator</a></h1><input class="vars" type="text" id="title" placeholder="(enter title to save...)"><div>What do the future populations/demographics look like?</div></div></header>
+  <header>
+    <div class="wrap" style="padding-left:80px">
+      <h1><a href="/population-calculator/">Population calculator</a></h1>
+      <input class="vars" type="text" id="title" placeholder="(type title to save...)">
+    </div>
+  </header>
   <div class="wrap">
     <div id="chart_container">
       <div id="y_axis"></div>
@@ -209,6 +221,7 @@
       <div><label for="immigration">immigration/year <span data-for="immigration" id="immigration_v"></span></label> <input class="vars" type="range" min="0" max="100000" step="100" id="immigration"></div>
       <div><label for="start_pop">Starting population <span data-for="start_pop" id="start_pop_v"></span></label> <input class="vars" type="range" min="0" max="10000000" step="1000" id="start_pop" value=""></div>
       <div><label for="birth_age">First birth given (age) <span data-for="birth_age" id="birth_age_v"></span></label> <input class="vars" type="range" min="16" max="40" step="1" id="birth_age" value=""></div>
+      <div><label for="human_age">Human age (average) <span data-for="human_age" id="human_age_v"></span></label> <input class="vars" type="range" min="30" max="1000" step="1" id="human_age" value=""></div>
       <div><label for="timespan">Timespan (years) <span data-for="timespan" id="timespan_v"></span></label> <input class="vars" type="range" min="10" max="1000" step="1" id="timespan" value=""></div>
       <div>
         <label for="pyramid">Age pyramid</label> 

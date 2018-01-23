@@ -254,12 +254,14 @@
             global.d3.select('#storage').html(null);
             for (var key in localStorage) {
                 obj = JSON.parse(localStorage.getItem(key));
-                global.d3.select('#storage')
-                    .append('li')
-                    .append('a')
-                    .attr('href', '/population-calculator/?' + Math.floor(Math.random() * 1000) + '#'+uri.toString(obj))
-                    .html(obj.title)
-                    .datum(obj.title);
+                if (obj && obj.title) {
+                    global.d3.select('#storage')
+                        .append('li')
+                        .append('a')
+                        .attr('href', '/population-calculator/?' + Math.floor(Math.random() * 1000) + '#'+uri.toString(obj))
+                        .html(obj.title)
+                        .datum(obj.title);
+                }
 
             }
             global.d3.selectAll('#storage li').append('span').html('delete').on('click', del_from_store)

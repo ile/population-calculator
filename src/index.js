@@ -29,6 +29,7 @@
     global.d3.selectAll('.vars').on('change', input_change);
     global.d3.selectAll('#title').on('keypress', title_keyup);
     global.d3.selectAll('label span').on('click', get_value_manually);
+    window.addEventListener('resize', draw);
     show_storage();
     calculate();
     set_intial_values();
@@ -148,8 +149,6 @@
             population: initial,
             total: sum(initial)
         }]
-
-        console.log(data);
 
         data2 = [{
             x: Math.ceil(new Date(vars.start_year, 0, 2).getTime() / 1000),

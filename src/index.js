@@ -10,10 +10,10 @@
         vars = {
             human_age: 80,
         	title: '',
-            birth_rate: 2.5,
+            birth_rate: 1.3,
             birth_age: 21,
             immigration: 1000,
-            start_pop: 60000,
+            start_pop: 500000,
             timespan: 200,
             start_year: (new Date()).getFullYear(),
             pyramid: 'flat'

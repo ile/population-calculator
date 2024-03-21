@@ -177,7 +177,7 @@
     function draw() {
         var element_chart = document.querySelector("#chart"),
             element_y_axis = document.querySelector("#y_axis"),
-            width = element.offsetWidth,
+            width = element_chart.offsetWidth,
             height = 550,
             hoverDetail,
             time,

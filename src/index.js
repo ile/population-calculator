@@ -176,7 +176,7 @@
     }
 
     function draw() {
-        var width = 960,
+        var width = document.querySelector("#chart").offsetWidth,
             height = 550,
             hoverDetail,
             time,

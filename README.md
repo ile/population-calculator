@@ -9,7 +9,7 @@ Available at [http://ile.github.io/population-calculator](http://ile.github.io/p
 
 ## What does it look like
 
-![image](https://f.cloud.github.com/assets/433707/1111791/3a81b5cc-19be-11e3-9bd3-2cc6e9d4e48f.png)
+![image](https://github.com/ile/population-calculator/assets/433707/6aeb7439-532f-4aef-a831-89daa2ffb6d0)
 
 ## Credits
 

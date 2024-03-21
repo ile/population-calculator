@@ -178,7 +178,7 @@
         var element_chart = document.querySelector("#chart"),
             element_y_axis = document.querySelector("#y_axis"),
             width = element_chart.offsetWidth,
-            height = 550,
+            height = 400,
             hoverDetail,
             time,
             years,

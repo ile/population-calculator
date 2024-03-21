@@ -15,7 +15,7 @@
             immigration: 1000,
             start_pop: 60000,
             timespan: 200,
-            start_year: 2013,
+            start_year: (new Date()).getFullYear(),
             pyramid: 'flat'
         }
 

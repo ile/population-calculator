@@ -175,7 +175,8 @@
     }
 
     function draw() {
-        var element = document.querySelector("#chart"),
+        var element_chart = document.querySelector("#chart"),
+            element_y_axis = document.querySelector("#y_axis"),
             width = element.offsetWidth,
             height = 550,
             hoverDetail,
@@ -184,10 +185,10 @@
             x_axis,
             y_axis;
 
-        element.innerHTML = '';
+        element_chart.innerHTML = element_y_axis.innerHTML = '';
 
         graph = new global.Rickshaw.Graph({
-            element,
+            element: element_chart,
             width: width,
             height: height,
             renderer: 'area',
@@ -215,14 +216,14 @@
         time = new global.Rickshaw.Fixtures.Time();
         years = time.unit('year');
         x_axis = new global.Rickshaw.Graph.Axis.Time({
-            graph: graph
+            graph
         });
 
         y_axis = new global.Rickshaw.Graph.Axis.Y({
-            graph: graph,
+            graph,
             orientation: 'left',
             tickFormat: global.Rickshaw.Fixtures.Number.formatKMBT,
-            element: document.getElementById('y_axis'),
+            element: element_y_axis,
         });
 
         graph.render();

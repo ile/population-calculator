@@ -175,7 +175,8 @@
     }
 
     function draw() {
-        var width = document.querySelector("#chart").offsetWidth,
+        var element = document.querySelector("#chart"),
+            width = element.offsetWidth,
             height = 550,
             hoverDetail,
             time,
@@ -183,8 +184,10 @@
             x_axis,
             y_axis;
 
+        element.innerHTML = '';
+
         graph = new global.Rickshaw.Graph({
-            element: document.querySelector("#chart"),
+            element,
             width: width,
             height: height,
             renderer: 'area',

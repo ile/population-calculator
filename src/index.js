@@ -10,7 +10,7 @@
         vars = {
             human_age: 80,
         	title: '',
-            birth_rate: 4,
+            birth_rate: 2.5,
             birth_age: 21,
             immigration: 1000,
             start_pop: 60000,
@@ -178,7 +178,7 @@
         var element_chart = document.querySelector("#chart"),
             element_y_axis = document.querySelector("#y_axis"),
             width = element_chart.offsetWidth,
-            height = 400,
+            height = 300,
             hoverDetail,
             time,
             years,
